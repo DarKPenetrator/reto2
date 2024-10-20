@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main  # Cambia 'main' por tu rama principal si es diferente
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '20'  # Cambia según la versión que necesites
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Build
+      run: npm run build
+
+    - name: Build Docker image
+      run: |
+        docker build -t darkpenetrator/vue-example-app .
+        docker push darkpenetrator/vue-example-app
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
